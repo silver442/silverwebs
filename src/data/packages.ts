@@ -33,9 +33,9 @@ export const packages: ServicePackage[] = [
     id: "medio",
     name: "Medio",
     subtitle: "Web Interactiva con BBDD: E-commerce o Reservas",
-    price: 10000,
+    price: 20000,
     term: "2 a 6 meses",
-    payment: "20% anticipo ($2,000) y el resto en pagos semanales, quincenales o mensuales",
+    payment: "20% anticipo ($4,000) y el resto en pagos semanales, quincenales o mensuales",
     featured: true,
     termNote: true,
     features: [

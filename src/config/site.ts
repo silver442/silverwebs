@@ -4,8 +4,8 @@ export const siteConfig = {
   description:
     "Desarrollo web full-stack a la medida: landing pages, e-commerce, sistemas de reservas y plataformas web sin plantillas ni comisiones ocultas.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "528142977687",
-  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "silvestrehdz422@gmail.com",
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "",
+  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "",
   logo: "/images/bannerSilverWebs.png",
   profilePhoto: "/images/foto_perfil_silverWebs.png",
   social: {

@@ -35,7 +35,7 @@ export const tiers: Record<Tier, TierConfig> = {
     id: "medio",
     label: "Medio",
     subtitle: "Web Interactiva con BBDD",
-    base: 10000,
+    base: 20000,
     depositRate: 0.2,
     termMonths: [2, 3, 4, 5, 6],
     design: { kind: "price", amount: 1500 },
