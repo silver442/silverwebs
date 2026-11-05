@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ChevronDown, Mail } from "lucide-react";
+import { Check, CheckCircle2, ChevronDown, Loader2, Mail } from "lucide-react";
 import { formatMXN } from "@/lib/format";
-import { mailtoUrl, whatsappUrl } from "@/lib/links";
-import { buildQuoteMessage, quoteSubject } from "@/lib/messages";
+import { whatsappUrl } from "@/lib/links";
+import { buildQuoteMessage } from "@/lib/messages";
+import { EMAIL_PATTERN, postContact, SUCCESS_MESSAGE, type SendStatus } from "@/lib/sendForm";
 import type { QuoteInput, QuoteResult } from "@/lib/quote";
 import { Collapse } from "@/components/ui/Collapse";
 import { WhatsappIcon } from "@/components/ui/BrandIcons";
@@ -37,9 +38,32 @@ export function QuoteSummary({
   const [showIncluded, setShowIncluded] = useState(false);
   const [clientName, setClientName] = useState("");
   const [projectName, setProjectName] = useState("");
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<SendStatus>("idle");
 
   const contact = { clientName: clientName.trim(), projectName: projectName.trim() };
   const canSend = contact.clientName.length > 0 && contact.projectName.length > 0;
+  const canEmail = canSend && EMAIL_PATTERN.test(email.trim());
+  const sending = status === "sending";
+
+  const sendEmail = async () => {
+    setStatus("sending");
+    const ok = await postContact({
+      type: "quote",
+      nombre: contact.clientName,
+      negocio: contact.projectName,
+      email: email.trim(),
+      input,
+    });
+    if (!ok) {
+      setStatus("error");
+      return;
+    }
+    setStatus("success");
+    setClientName("");
+    setProjectName("");
+    setEmail("");
+  };
   const message = buildQuoteMessage(input, result, contact);
 
   const [baseLine, ...otherLines] = result.lines;
@@ -96,9 +120,8 @@ export function QuoteSummary({
             >
               <span className="flex items-center gap-1.5">
                 <Check className="size-3.5 shrink-0" />
-                {includedLines.length}{" "}
-                {includedLines.length === 1 ? "módulo incluido" : "módulos incluidos"} en el paquete
-                ($0)
+                {showIncluded ? "Ocultar" : "Ver"} {includedLines.length}{" "}
+                {includedLines.length === 1 ? "módulo incluido" : "módulos incluidos"} ($0)
               </span>
               <ChevronDown
                 className={`size-4 shrink-0 transition ${showIncluded ? "rotate-180" : ""}`}
@@ -181,6 +204,17 @@ export function QuoteSummary({
             placeholder="Ej. Café La Esquina"
           />
         </label>
+        <label className="block text-sm text-slate-300">
+          Tu correo electrónico
+          <input
+            type="email"
+            className={inputClass}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Ej. ana@cafelaesquina.mx"
+            autoComplete="email"
+          />
+        </label>
       </div>
 
       <div className="mt-5 flex flex-col gap-3">
@@ -194,19 +228,42 @@ export function QuoteSummary({
           <WhatsappIcon className="size-4" />
           Enviar por WhatsApp
         </a>
-        <a
-          href={canSend ? mailtoUrl(quoteSubject(contact), message) : undefined}
-          aria-disabled={!canSend}
-          className={`${buttonStyles.outline} ${canSend ? "" : "pointer-events-none opacity-50"}`}
+        <button
+          type="button"
+          onClick={sendEmail}
+          disabled={!canEmail || sending}
+          className={buttonStyles.outline}
         >
-          <Mail className="size-4" />
-          Enviar por Correo
-        </a>
-        {!canSend && (
+          {sending ? <Loader2 className="size-4 animate-spin" /> : <Mail className="size-4" />}
+          {sending ? "Enviando..." : "Enviar por Correo"}
+        </button>
+        {!canSend ? (
           <p className="text-center text-xs text-slate-500">
             Escribe tu nombre y el de tu proyecto para enviar la cotización.
           </p>
+        ) : (
+          !canEmail && (
+            <p className="text-center text-xs text-slate-500">
+              Agrega un correo válido para recibir una copia por correo.
+            </p>
+          )
         )}
+        <div aria-live="polite">
+          {status === "success" && (
+            <p className="flex items-center gap-2 rounded-lg border border-emerald-400/40 bg-emerald-400/10 px-3 py-2.5 text-sm text-emerald-300">
+              <CheckCircle2 className="size-4 shrink-0" />
+              {SUCCESS_MESSAGE}
+            </p>
+          )}
+          {status === "error" && (
+            <p
+              role="alert"
+              className="rounded-lg border border-red-400/40 bg-red-400/10 px-3 py-2.5 text-sm text-red-400"
+            >
+              No se pudo enviar la cotización. Inténtalo de nuevo o envíala por WhatsApp.
+            </p>
+          )}
+        </div>
       </div>
 
       <p className="mt-5 text-xs text-slate-500">

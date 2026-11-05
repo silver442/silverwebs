@@ -45,7 +45,7 @@ function IncludedModules({ labels }: { labels: string[] }) {
         <span className="flex items-center gap-2">
           <Check className="size-4 shrink-0" />
           {labels.length} {labels.length === 1 ? "módulo ya incluido" : "módulos ya incluidos"} en
-          tu paquete ({open ? "Ocultar" : "Ver incluidos"})
+          tu paquete ({open ? "Ocultar lista" : "Ver lista"})
         </span>
         <ChevronDown className={`size-4 shrink-0 transition ${open ? "rotate-180" : ""}`} />
       </button>

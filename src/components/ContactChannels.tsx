@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { Mail } from "lucide-react";
 import { siteConfig } from "@/config/site";
-import { mailtoUrl, whatsappUrl } from "@/lib/links";
+import { whatsappUrl } from "@/lib/links";
 import { FacebookIcon, LinkedinIcon, WhatsappIcon } from "@/components/ui/BrandIcons";
 
 const WHATSAPP_GREETING = "¡Hola Silvestre! Vengo de tu sitio web.";
@@ -18,16 +19,14 @@ type Channel = {
   tone: keyof typeof glow;
 } & ({ href: string } | { onOpen: () => void });
 
-// Correo y WhatsApp se construyen al hacer clic para que el correo y el número
-// no aparezcan en el HTML (los bots de spam lo rastrean).
+// WhatsApp se construye al hacer clic para que el número no aparezca en el HTML
+// (los bots de spam lo rastrean). Correo lleva al formulario de contacto.
 const channels: Channel[] = [
   {
     label: "Correo",
     Icon: Mail,
     tone: "peach",
-    onOpen: () => {
-      window.location.href = mailtoUrl("Contacto desde SilverWebs", "");
-    },
+    href: "/#contacto",
   },
   {
     label: "WhatsApp",
@@ -76,6 +75,13 @@ function ChannelButton({ channel, variant }: { channel: Channel; variant: Varian
     </>
   );
 
+  if ("href" in channel && channel.href.startsWith("/")) {
+    return (
+      <Link href={channel.href} aria-label={label} title={label} className={className}>
+        {content}
+      </Link>
+    );
+  }
   if ("href" in channel) {
     return (
       <a

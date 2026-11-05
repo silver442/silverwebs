@@ -7,11 +7,7 @@ interface QuoteContact {
   projectName: string;
 }
 
-export function quoteSubject({ projectName }: QuoteContact): string {
-  return `Cotización SilverWebs – ${projectName}`;
-}
-
-/** Resumen en texto plano para WhatsApp y correo. */
+/** Resumen en texto plano para WhatsApp. */
 export function buildQuoteMessage(
   input: QuoteInput,
   result: QuoteResult,

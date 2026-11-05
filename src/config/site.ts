@@ -1,11 +1,24 @@
+/**
+ * URL pública del sitio. Acepta el valor con o sin protocolo y, si falta,
+ * usa el dominio oficial (o localhost en desarrollo).
+ */
+function resolveSiteUrl(): string {
+  const raw =
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
+  if (!raw) {
+    return process.env.NODE_ENV === "development" ? "http://localhost:3000" : "https://silverwebs.dev";
+  }
+  const withProtocol = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+  return withProtocol.replace(/\/+$/, "");
+}
+
 export const siteConfig = {
   name: "SilverWebs",
   owner: "Silvestre",
   description:
     "Desarrollo web full-stack a la medida: landing pages, e-commerce, sistemas de reservas y plataformas web sin plantillas ni comisiones ocultas.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url: resolveSiteUrl(),
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "",
-  email: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "",
   logo: "/images/bannerSilverWebs.png",
   profilePhoto: "/images/foto_perfil_silverWebs.png",
   social: {
