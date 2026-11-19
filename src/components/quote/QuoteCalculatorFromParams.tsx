@@ -1,15 +1,23 @@
 "use client";
 
+import { useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { tierOrder, type Tier } from "@/data/quoteOptions";
+import { parseTier } from "@/data/quoteOptions";
 import { QuoteCalculator } from "./QuoteCalculator";
 
-function parseTier(value: string | null): Tier | undefined {
-  return tierOrder.find((id) => id === value);
-}
-
-/** Preselecciona el paquete a partir de `?plan=basico|medio|avanzado`. */
+/** Preselecciona el paquete a partir de `?plan=basico|profesional|negocio|avanzado` (acepta `medio`). */
 export function QuoteCalculatorFromParams() {
-  const tier = parseTier(useSearchParams().get("plan"));
+  const plan = useSearchParams().get("plan");
+  const tier = parseTier(plan);
+
+  // Normaliza los valores antiguos (p. ej. `?plan=medio`) en la barra de direcciones.
+  useEffect(() => {
+    if (tier && plan !== tier) {
+      const url = new URL(window.location.href);
+      url.searchParams.set("plan", tier);
+      window.history.replaceState(null, "", url);
+    }
+  }, [plan, tier]);
+
   return <QuoteCalculator key={tier ?? "default"} initialTier={tier} />;
 }

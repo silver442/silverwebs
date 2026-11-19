@@ -1,4 +1,4 @@
-import { tiers } from "@/data/quoteOptions";
+import { deliveryLines, tiers } from "@/data/quoteOptions";
 import { formatMXN } from "@/lib/format";
 import type { QuoteInput, QuoteResult } from "@/lib/quote";
 
@@ -35,7 +35,8 @@ export function buildQuoteMessage(
     `TOTAL ESTIMADO: ${formatMXN(result.total)} MXN`,
     `Anticipo: ${formatMXN(result.deposit)} (${Math.round(result.depositRate * 100)}%)`,
     `Plazo: ${result.termLabel}`,
-    `Plan de pagos: ${result.planLabel}`,
+    ...deliveryLines(input.tier).map(([label, value]) => `${label}: ${value}`),
+    `Plan de financiamiento: ${result.planLabel}`,
     "",
     "Desglose de pagos:",
     ...result.schedule.map(

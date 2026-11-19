@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { CalendarClock, Clock, CreditCard, Info, Wrench } from "lucide-react";
-import { maintenancePlans, packages, TERM_NOTE, type ServicePackage } from "@/data/packages";
+import { Clock, CreditCard, Info, MinusCircle, Wrench } from "lucide-react";
+import { maintenanceFee, packages, TERM_NOTE, type ServicePackage } from "@/data/packages";
 import { formatMXN } from "@/lib/format";
 import { PackageFeatures } from "@/components/PackageFeatures";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -9,7 +9,7 @@ import { buttonStyles } from "@/components/ui/styles";
 function PackageCard({ pkg }: { pkg: ServicePackage }) {
   return (
     <article
-      className={`relative flex h-full flex-col justify-between rounded-2xl border bg-surface p-6 sm:p-8 ${
+      className={`relative flex h-full flex-col justify-between rounded-2xl border bg-surface p-6 ${
         pkg.featured ? "border-peach shadow-xl shadow-peach/10" : "border-slate-border"
       }`}
     >
@@ -20,7 +20,7 @@ function PackageCard({ pkg }: { pkg: ServicePackage }) {
       )}
       <div>
         <p className="text-sm font-semibold uppercase tracking-widest text-mauve">{pkg.name}</p>
-        <h3 className="mt-2 text-xl font-bold text-white">{pkg.subtitle}</h3>
+        <h3 className="mt-2 text-xl font-bold text-white xl:min-h-21">{pkg.subtitle}</h3>
         <p className="mt-4">
           <span className="text-xs text-slate-400">Desde </span>
           <span className="text-4xl font-extrabold text-peach">{formatMXN(pkg.price)}</span>
@@ -31,8 +31,15 @@ function PackageCard({ pkg }: { pkg: ServicePackage }) {
           <div className="flex gap-3">
             <Clock className="mt-0.5 size-4 shrink-0 text-neon-blue" />
             <div>
-              <dt className="sr-only">Plazo</dt>
-              <dd className="text-slate-300">Plazo: {pkg.term}</dd>
+              <dt className="sr-only">Entrega</dt>
+              {pkg.delivery.launch ? (
+                <>
+                  <dd className="text-slate-300">Versión funcional: {pkg.delivery.launch}</dd>
+                  <dd className="text-slate-400">Desarrollo completo: {pkg.delivery.full}</dd>
+                </>
+              ) : (
+                <dd className="text-slate-300">Entrega: {pkg.delivery.full}</dd>
+              )}
             </div>
           </div>
           <div className="flex gap-3">
@@ -45,6 +52,12 @@ function PackageCard({ pkg }: { pkg: ServicePackage }) {
         </dl>
 
         <PackageFeatures features={pkg.features} />
+        {pkg.limit && (
+          <p className="mt-4 flex gap-2 text-xs text-slate-500">
+            <MinusCircle className="mt-px size-3.5 shrink-0" />
+            {pkg.limit}
+          </p>
+        )}
       </div>
 
       <div className="flex flex-col">
@@ -76,41 +89,28 @@ export function Services() {
           description="Elige el punto de partida ideal para tu proyecto. Todos incluyen código en GitHub de tu propiedad y despliegue profesional."
         />
 
-        <div className="grid gap-8 lg:grid-cols-3 lg:items-stretch">
+        <div className="grid grid-cols-1 items-stretch gap-6 md:grid-cols-2 xl:grid-cols-4">
           {packages.map((pkg) => (
             <PackageCard key={pkg.id} pkg={pkg} />
           ))}
         </div>
 
         <div className="mt-16 rounded-2xl border border-neon-blue bg-midnight p-6 sm:p-8">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-center">
-            <div className="lg:w-1/3">
-              <div className="flex items-center gap-3">
-                <span className="rounded-xl bg-royal p-2.5">
-                  <Wrench className="size-5 text-peach" />
-                </span>
-                <h3 className="text-xl font-bold text-white">Mantenimiento Web</h3>
+          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+            <div className="flex gap-4">
+              <span className="h-fit rounded-xl bg-royal p-2.5">
+                <Wrench className="size-5 text-peach" />
+              </span>
+              <div>
+                <h3 className="text-xl font-bold text-white">{maintenanceFee.name}</h3>
+                <p className="mt-2 max-w-2xl text-sm text-slate-400">{maintenanceFee.description}</p>
               </div>
-              <p className="mt-3 text-sm text-slate-400">
-                Tu proyecto no se queda solo después de la entrega. Elige la modalidad que mejor
-                se adapte a ti.
-              </p>
             </div>
-            <div className="grid flex-1 gap-4 sm:grid-cols-2">
-              {maintenancePlans.map((plan) => (
-                <div key={plan.name} className="rounded-xl border border-slate-border bg-surface/60 p-5">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-200">
-                    <CalendarClock className="size-4 text-neon-blue" />
-                    {plan.name}
-                  </div>
-                  <p className="mt-2">
-                    <span className="text-2xl font-extrabold text-peach">{formatMXN(plan.price)}</span>
-                    <span className="text-sm text-slate-400"> MXN / {plan.unit}</span>
-                  </p>
-                  <p className="mt-2 text-sm text-slate-400">{plan.description}</p>
-                </div>
-              ))}
-            </div>
+            <p className="shrink-0 md:text-right">
+              <span className="block text-xs uppercase tracking-widest text-mauve">Cuota fija</span>
+              <span className="text-3xl font-extrabold text-peach">{formatMXN(maintenanceFee.price)}</span>
+              <span className="text-sm text-slate-400"> MXN / {maintenanceFee.unit}</span>
+            </p>
           </div>
         </div>
       </div>

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
-import { maintenancePlans } from "@/data/packages";
+import { maintenanceFee } from "@/data/packages";
+import { PHASED_DELIVERY_NOTE } from "@/data/quoteOptions";
 import { formatMXN } from "@/lib/format";
 import { LegalDocument } from "@/components/LegalDocument";
 
@@ -18,7 +19,7 @@ export default function TerminosPage() {
     <LegalDocument
       eyebrow="Legal"
       title="Términos y Condiciones"
-      updated="15 de octubre de 2026"
+      updated="18 de noviembre de 2026"
     >
       <p>
         Estos términos regulan la contratación de los servicios de diseño y desarrollo de software
@@ -49,12 +50,16 @@ export default function TerminosPage() {
           <strong>Paquete Básico:</strong> 40% de anticipo al iniciar y 60% contra entrega.
         </li>
         <li>
-          <strong>Paquete Medio:</strong> 20% de anticipo y el saldo en pagos semanales,
-          quincenales o mensuales durante el plazo elegido.
+          <strong>Paquete Profesional:</strong> 20% de anticipo y el saldo en pagos semanales,
+          quincenales o mensuales en un plazo de 1 a 3 meses.
         </li>
         <li>
-          <strong>Paquete Avanzado:</strong> 25% de anticipo y el saldo dividido en el plazo
-          elegido.
+          <strong>Paquete Negocio:</strong> 20% de anticipo y el saldo en pagos semanales,
+          quincenales o mensuales en un plazo de 2 a 6 meses.
+        </li>
+        <li>
+          <strong>Paquete Avanzado:</strong> 25% de anticipo y el saldo en pagos semanales,
+          quincenales o mensuales en un plazo de 3 a 12 meses.
         </li>
       </ul>
       <p>
@@ -69,6 +74,12 @@ export default function TerminosPage() {
         revisiones adicionales o los retrasos en la entrega de información por parte del Cliente
         pueden modificar la fecha de entrega.
       </p>
+      <p>
+        El paquete Básico se entrega en 2 a 7 días y el Profesional en 3 semanas. En los paquetes
+        Negocio y Avanzado la entrega es por fases: la versión funcional queda en línea en ~4
+        semanas (Negocio) o en 4 a 6 semanas (Avanzado), y el desarrollo completo toma un mínimo
+        de 2 y 3 meses, respectivamente. {PHASED_DELIVERY_NOTE}
+      </p>
 
       <h2>5. Obligaciones del Cliente</h2>
       <ul>
@@ -79,8 +90,9 @@ export default function TerminosPage() {
 
       <h2>6. Propiedad intelectual</h2>
       <p>
-        Una vez liquidado el total del proyecto, el código fuente desarrollado específicamente para
-        el Cliente es de su propiedad y se entrega en un repositorio de GitHub a su nombre. El
+        Una vez liquidado el 100% del plan de financiamiento, el código fuente desarrollado específicamente para
+        el Cliente es de su propiedad y se transfiere en un repositorio de GitHub a su nombre, junto
+        con el control del dominio. El
         Prestador puede reutilizar herramientas, bibliotecas y componentes genéricos de su autoría,
         y mostrar el proyecto en su portafolio salvo acuerdo de confidencialidad por escrito.
       </p>
@@ -96,11 +108,10 @@ export default function TerminosPage() {
       <h2>8. Garantía y mantenimiento</h2>
       <p>
         Cada entrega incluye 30 días naturales de garantía para corregir errores atribuibles al
-        desarrollo, sin costo. Después de ese periodo, los ajustes y mejoras se contratan como{" "}
-        {maintenancePlans
-          .map((plan) => `${plan.name} (${formatMXN(plan.price)} MXN / ${plan.unit})`)
-          .join(" o ")}
-        .
+        desarrollo, sin costo. Después de ese periodo, los cambios de contenido, ajustes y
+        actualizaciones se cobran bajo demanda con una cuota fija de{" "}
+        {formatMXN(maintenanceFee.price)} MXN por {maintenanceFee.unit}, sin contratos ni
+        mensualidades obligatorias.
       </p>
 
       <h2>9. Cancelación</h2>

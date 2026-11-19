@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ArrowUpCircle, Check, ChevronDown, Lock } from "lucide-react";
-import { quoteModules, type ModuleId, type OptionPrice, type Tier } from "@/data/quoteOptions";
+import { quoteModules, tiers, type ModuleId, type OptionPrice, type Tier } from "@/data/quoteOptions";
 import { formatMXN } from "@/lib/format";
 import { Collapse } from "@/components/ui/Collapse";
 
@@ -10,7 +10,7 @@ interface ModuleListProps {
   tier: Tier;
   selected: ModuleId[];
   onToggle: (id: ModuleId) => void;
-  onUpgrade: () => void;
+  onUpgrade: (tier: Tier) => void;
 }
 
 function PriceTag({ price }: { price: OptionPrice }) {
@@ -85,11 +85,11 @@ export function ModuleList({ tier, selected, onToggle, onUpgrade }: ModuleListPr
                 </span>
                 <button
                   type="button"
-                  onClick={onUpgrade}
+                  onClick={() => onUpgrade(price.upgradeTo)}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-peach/60 px-3 py-1.5 text-xs font-semibold text-peach transition hover:bg-peach/10"
                 >
                   <ArrowUpCircle className="size-3.5" />
-                  Requiere Paquete Medio – Subir
+                  Requiere Paquete {tiers[price.upgradeTo].label} – Subir
                 </button>
               </li>
             );

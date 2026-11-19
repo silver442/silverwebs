@@ -10,6 +10,7 @@ import type { QuoteInput, QuoteResult } from "@/lib/quote";
 import { Collapse } from "@/components/ui/Collapse";
 import { WhatsappIcon } from "@/components/ui/BrandIcons";
 import { buttonStyles } from "@/components/ui/styles";
+import { DeliveryTimeline } from "./DeliveryTimeline";
 
 export const SUMMARY_ID = "resumen-cotizacion";
 
@@ -99,7 +100,11 @@ export function QuoteSummary({
           value={`${result.installmentsExact ? "" : "≈ "}${formatMXN(result.installmentAmount)}`}
         />
       </dl>
-      <p className="mt-3 text-xs text-slate-400">{result.planLabel}</p>
+      <p className="mt-3 text-xs text-slate-400">
+        <span className="font-semibold text-slate-300">Plan de financiamiento:</span>{" "}
+        {result.planLabel}
+      </p>
+      <DeliveryTimeline tier={input.tier} className="mt-4" />
 
       <div className="mt-5 space-y-1.5 border-t border-slate-border/60 pt-4 text-sm">
         {baseLine && (

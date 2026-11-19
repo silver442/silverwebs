@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowRight, Check, ChevronDown, Palette, Package, Puzzle, Wallet } from "lucide-react";
+import { ArrowRight, Check, ChevronDown, Info, Palette, Package, Puzzle, Wallet } from "lucide-react";
 import {
   frequencies,
+  hasPhasedDelivery,
+  PHASED_DELIVERY_NOTE,
   quoteModules,
   tierOrder,
   tiers,
@@ -15,6 +17,7 @@ import { formatMXN } from "@/lib/format";
 import { calculateQuote, isSelectable } from "@/lib/quote";
 import { Collapse } from "@/components/ui/Collapse";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { DeliveryTimeline } from "./DeliveryTimeline";
 import { ModuleList } from "./ModuleList";
 import { QuoteSummary, SUMMARY_ID } from "./QuoteSummary";
 
@@ -145,10 +148,10 @@ function monthsFor(tier: Tier, current: number): number {
 }
 
 export function QuoteCalculator({ initialTier }: { initialTier?: Tier }) {
-  const [tier, setTier] = useState<Tier>(initialTier ?? "medio");
+  const [tier, setTier] = useState<Tier>(initialTier ?? "negocio");
   const [needsDesign, setNeedsDesign] = useState(false);
   const [modules, setModules] = useState<ModuleId[]>([]);
-  const [months, setMonths] = useState(() => monthsFor(initialTier ?? "medio", DEFAULT_MONTHS));
+  const [months, setMonths] = useState(() => monthsFor(initialTier ?? "negocio", DEFAULT_MONTHS));
   const [frequency, setFrequency] = useState<Frequency>("quincenal");
   // Si el paquete llega preseleccionado por URL, se empieza en el paso 2.
   const [openStep, setOpenStep] = useState<number | null>(initialTier ? 2 : 1);
@@ -202,7 +205,7 @@ export function QuoteCalculator({ initialTier }: { initialTier?: Tier }) {
         ? "Sin módulos extra"
         : `${modules.length} ${modules.length === 1 ? "módulo" : "módulos"} (+${formatMXN(modulesTotal)})`,
     payment: tierConfig.termMonths
-      ? `${months} meses · ${frequencies[frequency].label}`
+      ? `${months} ${months === 1 ? "mes" : "meses"} · ${frequencies[frequency].label}`
       : `${tierConfig.fixedTermLabel} · 40% / 60%`,
   };
 
@@ -232,7 +235,7 @@ export function QuoteCalculator({ initialTier }: { initialTier?: Tier }) {
               title="Nivel de paquete base"
               summary={summaries.tier}
             >
-              <div role="radiogroup" className="flex flex-col gap-3 sm:flex-row">
+              <div role="radiogroup" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {tierOrder.map((id) => (
                   <ChoiceCard
                     key={id}
@@ -278,20 +281,21 @@ export function QuoteCalculator({ initialTier }: { initialTier?: Tier }) {
                 tier={tier}
                 selected={modules}
                 onToggle={toggleModule}
-                onUpgrade={() => changeTier("medio")}
+                onUpgrade={changeTier}
               />
             </AccordionStep>
 
             <AccordionStep
               {...stepProps(4)}
               icon={Wallet}
-              title="Plazo y frecuencia de pago"
+              title="Plan de financiamiento / Plazo de pago"
               summary={summaries.payment}
             >
+              <DeliveryTimeline tier={tier} className="mb-4" />
               {tierConfig.termMonths ? (
                 <div className="grid gap-4 sm:grid-cols-2">
                   <label className="text-sm text-slate-300">
-                    Plazo de desarrollo
+                    Plazo de financiamiento
                     <select
                       className={`${selectClass} mt-1.5`}
                       value={months}
@@ -299,7 +303,7 @@ export function QuoteCalculator({ initialTier }: { initialTier?: Tier }) {
                     >
                       {tierConfig.termMonths.map((m) => (
                         <option key={m} value={m}>
-                          {m} meses
+                          {m} {m === 1 ? "mes" : "meses"}
                         </option>
                       ))}
                     </select>
@@ -320,14 +324,20 @@ export function QuoteCalculator({ initialTier }: { initialTier?: Tier }) {
                   </label>
                   <p className="text-sm text-slate-400 sm:col-span-2">
                     Anticipo del {Math.round(tierConfig.depositRate * 100)}% y el saldo en cuotas{" "}
-                    {frequencies[frequency].label.toLowerCase()}es. El plazo también define el
-                    ritmo de dedicación semanal al proyecto.
+                    {frequencies[frequency].label.toLowerCase()}es. El plazo de financiamiento
+                    define el monto de cada cuota.
                   </p>
                 </div>
               ) : (
                 <p className="text-sm text-slate-300">
                   Plazo fijo de <strong className="text-white">{tierConfig.fixedTermLabel}</strong>.
                   Anticipo del 40% y un pago final del 60% contra entrega.
+                </p>
+              )}
+              {hasPhasedDelivery(tier) && (
+                <p className="mt-4 flex gap-2 rounded-lg bg-midnight/70 p-3 text-xs leading-relaxed text-slate-400">
+                  <Info className="size-4 shrink-0 text-mauve" />
+                  {PHASED_DELIVERY_NOTE}
                 </p>
               )}
             </AccordionStep>

@@ -1,5 +1,10 @@
 import "server-only";
-import { tiers } from "@/data/quoteOptions";
+import {
+  deliveryLines,
+  hasPhasedDelivery,
+  PHASED_DELIVERY_NOTE,
+  tiers,
+} from "@/data/quoteOptions";
 import { formatMXN } from "@/lib/format";
 import type { QuoteInput, QuoteResult } from "@/lib/quote";
 
@@ -150,7 +155,10 @@ export function quoteEmailHtml(
       ${row("Plazo", escapeHtml(result.termLabel))}
       ${row("Número de cuotas", String(result.installments))}
       ${row("Monto por cuota", `${result.installmentsExact ? "" : "≈ "}${formatMXN(result.installmentAmount)}`)}
-      ${row("Plan de pagos", escapeHtml(result.planLabel))}
+      ${deliveryLines(input.tier)
+        .map(([label, value]) => row(label, escapeHtml(value)))
+        .join("")}
+      ${row("Plan de financiamiento", escapeHtml(result.planLabel))}
     </table>
 
     <h2 style="margin:20px 0 8px;font-size:14px;text-transform:uppercase;letter-spacing:1px;color:${colors.mauve};">Tabla de pagos</h2>
@@ -163,6 +171,11 @@ export function quoteEmailHtml(
       ${schedule}
     </table>
 
+    ${
+      hasPhasedDelivery(input.tier)
+        ? `<p style="margin:20px 0 0;padding:12px;border:1px solid ${colors.blue};border-radius:8px;font-size:12px;line-height:1.5;color:${colors.text};"><strong style="color:${colors.peach};">Entrega por fases:</strong> ${escapeHtml(PHASED_DELIVERY_NOTE)}</p>`
+        : ""
+    }
     <p style="margin:20px 0 0;font-size:12px;color:${colors.muted};">Cotización estimada. El precio final se confirma tras una breve llamada de levantamiento de requerimientos.</p>`;
 
   return layout(

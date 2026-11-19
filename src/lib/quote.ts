@@ -126,7 +126,7 @@ export function calculateQuote(input: QuoteInput): QuoteResult {
     installmentAmount: Math.round(remaining / count),
     installmentsExact: extra === 0,
     termLabel: monthsLabel,
-    planLabel: `Anticipo ${depositPct}% + ${count} pagos ${freq.label.toLowerCase()}es en ${monthsLabel}`,
+    planLabel: `Anticipo ${depositPct}% + ${count} ${count === 1 ? "pago" : "pagos"} ${freq.label.toLowerCase()}${count === 1 ? "" : "es"} en ${monthsLabel}`,
     schedule,
   };
 }

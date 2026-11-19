@@ -1,5 +1,5 @@
 import { Resend } from "resend";
-import { frequencies, tierOrder, tiers, type Frequency, type ModuleId } from "@/data/quoteOptions";
+import { frequencies, parseTier, tiers, type Frequency, type ModuleId } from "@/data/quoteOptions";
 import { contactEmailHtml, quoteEmailHtml } from "@/lib/email";
 import { calculateQuote, isSelectable, type QuoteInput } from "@/lib/quote";
 import { EMAIL_PATTERN } from "@/lib/sendForm";
@@ -21,7 +21,7 @@ function email(value: unknown): string | null {
 function parseQuoteInput(value: unknown): QuoteInput | null {
   if (!value || typeof value !== "object") return null;
   const raw = value as Body;
-  const tier = tierOrder.find((t) => t === raw.tier);
+  const tier = parseTier(raw.tier);
   const frequency = Object.keys(frequencies).find((f) => f === raw.frequency) as
     | Frequency
     | undefined;
