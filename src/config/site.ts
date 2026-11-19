@@ -20,7 +20,7 @@ export const siteConfig = {
   url: resolveSiteUrl(),
   whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "",
   logo: "/images/bannerSilverWebs.png",
-  profilePhoto: "/images/foto_perfil_silverWebs.png",
+  profilePhoto: "/images/foto_perfil_silverWebs.webp",
   social: {
     facebook: "https://www.facebook.com/silverweboficial",
     linkedin: "https://www.linkedin.com/in/silvestre-hernandez-822240244/",

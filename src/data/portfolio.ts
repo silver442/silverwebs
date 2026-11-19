@@ -3,6 +3,8 @@ export interface Project {
   description: string;
   tags: string[];
   image?: string;
+  /** Ilustración decorativa para proyectos que aún no tienen captura. */
+  illustration?: string;
   url?: string;
 }
 
@@ -43,11 +45,13 @@ export const upcomingProjects: Project[] = [
     name: "Silgames",
     description: "Plataforma de juegos de estrategia en línea.",
     tags: ["Go", "PostgreSQL", "Next.js"],
+    illustration: "/images/ilustraciones/control.webp",
   },
   {
     name: "DigiTutos",
     description:
       "Plataforma web educativa para el canal de tutoriales de tecnología en YouTube.",
     tags: ["Educación", "YouTube"],
+    illustration: "/images/ilustraciones/laptop-video.webp",
   },
 ];

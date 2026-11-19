@@ -8,7 +8,7 @@ const SLIDE_MS = 500;
 const SWIPE_PX = 50;
 
 const navButtonClass =
-  "absolute top-1/2 z-20 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-slate-border bg-surface/90 text-slate-200 backdrop-blur transition hover:border-peach hover:text-peach";
+  "absolute top-1/2 z-20 flex size-8 -translate-y-1/2 sm:size-10 items-center justify-center rounded-full border border-glow/50 bg-abyss/80 text-slate-200 shadow-[0_0_18px] shadow-glow/25 backdrop-blur transition duration-200 hover:border-peach hover:text-peach motion-safe:hover:scale-110";
 
 function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false);
@@ -119,8 +119,8 @@ export function PortfolioCarousel({ children }: { children: React.ReactNode }) {
       onFocusCapture={() => setPaused(true)}
       onBlurCapture={() => setPaused(false)}
     >
-      <div className="relative">
-        <div className="overflow-hidden py-2">
+      <div className="relative mx-auto max-w-[19rem] sm:max-w-none">
+        <div className="overflow-hidden px-1 py-4">
           <ul
             className={`flex gap-6 [--per:1] [touch-action:pan-y] sm:[--per:2] lg:[--per:3] ${
               animate ? "transition-transform duration-500 ease-out" : ""
@@ -161,7 +161,7 @@ export function PortfolioCarousel({ children }: { children: React.ReactNode }) {
                     faded
                       ? "pointer-events-none scale-95 cursor-pointer opacity-40 blur-[0.5px] md:pointer-events-auto"
                       : "z-10 scale-100 opacity-100"
-                  } ${isFocused && isDesktop ? "[&>article]:border-neon-blue" : ""}`}
+                  } ${isFocused && isDesktop ? "[&>article]:border-glow/70 [&>article]:shadow-[0_0_36px_-8px] [&>article]:shadow-glow/50" : ""}`}
                 >
                   {slide}
                 </li>
@@ -176,24 +176,24 @@ export function PortfolioCarousel({ children }: { children: React.ReactNode }) {
               type="button"
               onClick={() => moveTo(focus - 1)}
               aria-label="Proyecto anterior"
-              className={`${navButtonClass} left-2 lg:-left-5`}
+              className={`${navButtonClass} -left-10 sm:left-2 lg:-left-5`}
             >
-              <ChevronLeft className="size-5" />
+              <ChevronLeft className="size-4 sm:size-5" />
             </button>
             <button
               type="button"
               onClick={() => moveTo(focus + 1)}
               aria-label="Proyecto siguiente"
-              className={`${navButtonClass} right-2 lg:-right-5`}
+              className={`${navButtonClass} -right-10 sm:right-2 lg:-right-5`}
             >
-              <ChevronRight className="size-5" />
+              <ChevronRight className="size-4 sm:size-5" />
             </button>
           </>
         )}
       </div>
 
       {n > 1 && (
-        <div className="mt-8 flex justify-center gap-2">
+        <div className="mt-6 flex justify-center gap-2 sm:mt-10">
           {slides.map((_, i) => (
             <button
               key={i}
@@ -202,7 +202,7 @@ export function PortfolioCarousel({ children }: { children: React.ReactNode }) {
               aria-label={`Ir al proyecto ${i + 1}`}
               aria-current={i === active}
               className={`h-2 rounded-full transition-all ${
-                i === active ? "w-6 bg-peach" : "w-2 bg-slate-border hover:bg-neon-blue"
+                i === active ? "w-6 bg-peach" : "w-2 bg-slate-border hover:bg-glow"
               }`}
             />
           ))}

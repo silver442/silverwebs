@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Lock, Menu, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, Send, UserRound, X } from "lucide-react";
 import { navLinks } from "@/config/site";
 import { Logo } from "@/components/Logo";
 import { buttonStyles } from "@/components/ui/styles";
@@ -13,38 +14,78 @@ function ClientAccessButton() {
       type="button"
       disabled
       title="Próximamente"
-      className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs text-slate-500"
+      className="inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-slate-300"
     >
-      <Lock className="size-3.5" />
+      <UserRound className="size-4" />
       Acceso Clientes
-      <span className="rounded bg-surface px-1.5 py-0.5 text-[10px] uppercase tracking-wide text-mauve">
+      <span className="rounded-full border border-glow/50 bg-glow/10 px-2 py-0.5 text-[10px] uppercase tracking-wide text-[#8fb8ff]">
         Pronto
       </span>
     </button>
   );
 }
 
+const sectionIds = ["inicio", ...navLinks.flatMap((link) => (link.href.startsWith("/#") ? [link.href.slice(2)] : []))];
+
+/** Enlace del menú que corresponde a la página actual o, en el inicio, a la sección visible. */
+function useActiveHref(): string | null {
+  const pathname = usePathname();
+  const [section, setSection] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (pathname !== "/") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setSection(entry.target.id);
+        }
+      },
+      // Cuenta como visible la sección que cruza la mitad de la pantalla.
+      { rootMargin: "-50% 0px -50% 0px" },
+    );
+    for (const id of sectionIds) {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    }
+    return () => observer.disconnect();
+  }, [pathname]);
+
+  if (pathname !== "/") return pathname;
+  return section && section !== "inicio" ? `/#${section}` : null;
+}
+
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const activeHref = useActiveHref();
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-slate-border/40 bg-obsidian/80 backdrop-blur-md">
-      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-glow/15 bg-abyss/75 backdrop-blur-md">
+      <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 sm:px-6">
         <Logo />
 
-        <ul className="hidden items-center gap-6 lg:flex">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <Link href={link.href} className="text-sm text-slate-300 transition hover:text-peach">
-                {link.label}
-              </Link>
-            </li>
-          ))}
+        <ul className="hidden items-center gap-8 lg:flex">
+          {navLinks.map((link) => {
+            const active = link.href === activeHref;
+            return (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={`relative py-2 text-[0.95rem] transition after:absolute after:inset-x-1 after:-bottom-1 after:h-0.5 after:rounded-full after:bg-glow after:shadow-[0_0_8px] after:shadow-glow after:transition-opacity ${
+                    active ? "text-white after:opacity-100" : "text-slate-300 after:opacity-0 hover:text-white"
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
 
-        <div className="hidden items-center gap-2 lg:flex">
+        <div className="hidden items-center gap-4 lg:flex">
           <ClientAccessButton />
-          <Link href="/cotizador" className={`${buttonStyles.primary} px-4 py-2`}>
+          <Link href="/cotizador" className={`${buttonStyles.cta} px-6 py-3 text-sm`}>
+            <Send className="size-4" />
             Cotizar Proyecto
           </Link>
         </div>
@@ -61,7 +102,7 @@ export function Navbar() {
       </nav>
 
       {open && (
-        <div className="border-t border-slate-border/40 bg-obsidian/95 px-4 pb-6 lg:hidden">
+        <div className="border-t border-glow/15 bg-abyss/95 px-4 pb-6 lg:hidden">
           <ul className="flex flex-col py-2">
             {navLinks.map((link) => (
               <li key={link.href}>
@@ -76,7 +117,8 @@ export function Navbar() {
             ))}
           </ul>
           <div className="flex flex-col gap-2">
-            <Link href="/cotizador" onClick={() => setOpen(false)} className={buttonStyles.primary}>
+            <Link href="/cotizador" onClick={() => setOpen(false)} className={`${buttonStyles.cta} px-6 py-3 text-sm`}>
+              <Send className="size-4" />
               Cotizar Proyecto
             </Link>
             <ClientAccessButton />

@@ -27,7 +27,9 @@ function FooterBrand() {
   return (
     <div className="max-w-xs">
       <Link href="/" className="inline-flex items-center gap-3">
-        <span className="font-mono text-xl font-bold text-peach">&lt;/&gt;</span>
+        <span className="font-mono text-xl font-bold text-glow">
+          &lt;<span className="text-peach">/</span>&gt;
+        </span>
         <span className="font-bold leading-tight text-white">
           SilverWebs
           <span className="block text-sm font-normal text-slate-400">Desarrollo de Software</span>
@@ -42,13 +44,14 @@ function FooterBrand() {
 
 export function Footer() {
   return (
-    <footer className="bg-obsidian">
-      <div className="mx-auto flex max-w-4xl flex-col items-start justify-between gap-12 px-4 py-14 sm:px-6 md:flex-row">
+    <footer className="bg-abyss">
+      <div aria-hidden="true" className="section-divider" />
+      <div className="mx-auto flex max-w-5xl flex-col items-start justify-between gap-12 px-4 py-16 sm:px-6 md:flex-row">
         <FooterBrand />
         {columns.map((column) => (
           <div key={column.title} className="w-auto">
             <nav aria-label={column.title}>
-              <h2 className="text-sm font-semibold uppercase tracking-widest text-mauve">
+              <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-peach/80">
                 {column.title}
               </h2>
               <ul className="mt-4 space-y-2.5 text-sm">
