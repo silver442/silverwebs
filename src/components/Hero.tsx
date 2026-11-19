@@ -93,7 +93,7 @@ export function Hero() {
                   alt={`${siteConfig.owner}, desarrollador web de ${siteConfig.name}`}
                   fill
                   sizes="(min-width: 1024px) 26rem, (min-width: 640px) 24rem, 15rem"
-                  priority
+                  preload
                   className="object-cover"
                 />
               </div>

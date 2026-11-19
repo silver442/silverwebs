@@ -72,7 +72,7 @@ export function Footer() {
           </div>
         ))}
       </div>
-      <p className="px-4 pb-8 text-center text-xs text-slate-500 sm:px-6">
+      <p className="px-4 pb-8 text-center text-xs text-slate-400/80 sm:px-6">
         © <CurrentYear /> SilverWebs. Todos los derechos reservados.
       </p>
     </footer>

@@ -53,29 +53,26 @@ function PackageCard({ pkg }: { pkg: ServicePackage }) {
           <span className="text-sm text-slate-400"> MXN</span>
         </p>
 
-        <dl className="mt-6 space-y-3 border-y border-slate-border/50 py-5 text-sm">
-          <div className="flex gap-3">
-            <Clock className="mt-0.5 size-4 shrink-0 text-glow" />
-            <div>
-              <dt className="sr-only">Entrega</dt>
-              {pkg.delivery.launch ? (
-                <>
-                  <dd className="text-slate-300">Versión funcional: {pkg.delivery.launch}</dd>
-                  <dd className="text-slate-400">Desarrollo completo: {pkg.delivery.full}</dd>
-                </>
-              ) : (
-                <dd className="text-slate-300">Entrega: {pkg.delivery.full}</dd>
-              )}
-            </div>
-          </div>
-          <div className="flex gap-3">
-            <CreditCard className="mt-0.5 size-4 shrink-0 text-glow" />
-            <div>
-              <dt className="sr-only">Pagos</dt>
-              <dd className="text-slate-300">{pkg.payment}</dd>
-            </div>
-          </div>
-        </dl>
+        <ul className="mt-6 space-y-3 border-y border-slate-border/50 py-5 text-sm">
+          <li className="flex gap-3">
+            <Clock aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-glow" />
+            {pkg.delivery.launch ? (
+              <div>
+                <p className="text-slate-300">Versión funcional: {pkg.delivery.launch}</p>
+                <p className="text-slate-400">Desarrollo completo: {pkg.delivery.full}</p>
+              </div>
+            ) : (
+              <p className="text-slate-300">Entrega: {pkg.delivery.full}</p>
+            )}
+          </li>
+          <li className="flex gap-3">
+            <CreditCard aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-glow" />
+            <p className="text-slate-300">
+              <span className="sr-only">Pagos: </span>
+              {pkg.payment}
+            </p>
+          </li>
+        </ul>
 
         <PackageFeatures features={pkg.features} />
         {pkg.limit && (

@@ -1,24 +1,39 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
+import { siteConfig } from "@/config/site";
 import { blogCategories, posts } from "@/data/blog";
+import { JsonLd } from "@/components/JsonLd";
 import { buttonStyles } from "@/components/ui/styles";
+import { absoluteUrl, breadcrumbJsonLd, pageMetadata } from "@/lib/seo";
 
 const title = "Blog & Recursos sobre Desarrollo Web y Negocios Digitales";
 const description =
   "Guías prácticas, consejos y recursos sobre desarrollo web, tiendas en línea, SEO y transformación digital para emprendedores y negocios en México.";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: "Blog",
+  socialTitle: title,
   description,
-  alternates: { canonical: "/blog" },
-  openGraph: {
-    title: `${title} | SilverWebs`,
-    description,
-    url: "/blog",
-    type: "website",
-    locale: "es_MX",
-  },
+  path: "/blog",
+});
+
+const blogJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  name: title,
+  description,
+  url: absoluteUrl("/blog"),
+  inLanguage: "es-MX",
+  publisher: { "@id": absoluteUrl("/#organization") },
+  blogPost: posts.map((post) => ({
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.publishedAt,
+    url: absoluteUrl(`/blog/${post.slug}`),
+    author: { "@type": "Person", name: siteConfig.owner },
+  })),
 };
 
 const dateFormat = new Intl.DateTimeFormat("es-MX", { dateStyle: "long", timeZone: "UTC" });
@@ -26,6 +41,8 @@ const dateFormat = new Intl.DateTimeFormat("es-MX", { dateStyle: "long", timeZon
 export default function BlogPage() {
   return (
     <main className="flex-1 bg-gradient-to-b from-obsidian to-midnight/50 pb-24 pt-28 sm:pt-32">
+      <JsonLd data={blogJsonLd} />
+      <JsonLd data={breadcrumbJsonLd("Blog", "/blog")} />
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
         <header className="mx-auto max-w-3xl text-center">
           <p className="text-sm font-semibold uppercase tracking-widest text-mauve">Blog</p>

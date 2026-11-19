@@ -193,18 +193,24 @@ export function PortfolioCarousel({ children }: { children: React.ReactNode }) {
       </div>
 
       {n > 1 && (
-        <div className="mt-6 flex justify-center gap-2 sm:mt-10">
+        <div className="mt-6 flex justify-center sm:mt-10">
           {slides.map((_, i) => (
+            // El botón da el área táctil (≥ 24 px); el punto visible sigue midiendo 8 px.
             <button
               key={i}
               type="button"
               onClick={() => moveTo(n + i)}
-              aria-label={`Ir al proyecto ${i + 1}`}
+              aria-label={`Ir al proyecto ${i + 1} de ${n}`}
               aria-current={i === active}
-              className={`h-2 rounded-full transition-all ${
-                i === active ? "w-6 bg-peach" : "w-2 bg-slate-border hover:bg-glow"
-              }`}
-            />
+              className="group flex min-h-[28px] min-w-[28px] items-center justify-center"
+            >
+              <span
+                aria-hidden="true"
+                className={`h-2 rounded-full transition-all ${
+                  i === active ? "w-6 bg-peach" : "w-2 bg-slate-border group-hover:bg-glow"
+                }`}
+              />
+            </button>
           ))}
         </div>
       )}
